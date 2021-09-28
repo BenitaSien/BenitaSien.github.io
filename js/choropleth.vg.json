@@ -8,7 +8,7 @@
   "data": [
     {
       "name": "source_1",
-      "url": "https://raw.githubusercontent.com/BenitaSien/FIT3179/main/loss_1994-2020.csv",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/loss_1994-2020.csv",
       "format": {"type": "csv", "delimiter": ","}
     },
     {
