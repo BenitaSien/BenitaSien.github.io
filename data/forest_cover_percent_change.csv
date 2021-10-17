@@ -1,4 +1,4 @@
-"Area","Year.x","land_cover_percent.x","Year.y","land_cover_percent.y","Percent_Change"
+"Area","Year_x","land_cover_percent_x","Year_y","land_cover_percent_y","Percent_Change"
 "Afghanistan",1990,1.85099408755323,2020,1.85099408755323,0
 "Albania",1990,28.7883211678832,2020,28.7919708029197,0.00364963503649562
 "Algeria",1990,0.699908470278032,2020,0.818309303282474,0.118400833004442
