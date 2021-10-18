@@ -1,31 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karla" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/base-min.css">
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-min.css">
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css">
   <!-- Import Vega & Vega-Lite (does not have to be from CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
   
   <!-- CSS file -->
+  <link rel="stylesheet" type="text/css" href="css/layout.css" media="all">
   <link rel="stylesheet" type="text/css" href="css/styles.css" media="all">
 
 </head>
 <body>
-  
-<div id="choropleth_map"></div>
-  <div id="bubble_chart"></div>
+  <div class="main">
+    <h1>Why Our Forests Are Changing</h1>
+    <h2>FIT3179 Data Visualisation 2<br>by Benita Sien</h2>
+    <div id="down-anchor"><p><a href="#content">▼</a></p></div>
+ </div>
+  <div class="content" id="content">
+    <h2>How They've Changed</h2>
+    <div class="pure-g">
+      
+      <div class="pure-u-1-1"><p style="text-align: center;">Grass grows, birds fly, sun shines... but what are our forests doing?</p></div>
+      <div class="pure-u-1-1"><div id="choropleth_map"></div></div>
+      <div class="pure-u-1-1"><p>Many of the countries of the world are experiencing varying levels of de- or re-forestation.
+        <br><br>South American rainforests are being torn down for cattle ranches.
+      <br><br> Worker exploitation in the cocoa industry is increasing deforestation in West Africa.
+      <br><br>Indonesia's forests are cut down to sell wood pulp and palm oil. 
+      <br><br>Corruption has given way to illegal logging in Myanmar and Cambodia.
+      <br><br>We can see here that deforestation is not just an environmental issue; it's also a socioeconomic one.
+      This is evidenced by Cuba and Puerto Rico have been successfully replanting forests due to government initiatives, as well as reductions in 
+      plantations and pastures due to socioeconomic transformations. 
+      <br><br>Europe and China appear to be reforesting their lands, but we will have to tread carefully when following their lead. 
+        For now, let's take a closer look at the effects of agricultural industries on forest cover.
+    </p></div>
+    </div>
+    <h2>The Effects of Agriculture</h2>
+    <div class="pure-g">
+      <div class="pure-u-1-1"><div id="bubble_chart"></div></div>
+      <div class="pure-u-1-1"><p>Beef production has the largest impact on forest cover, even compared to other animals like chickens and pigs. 
+        Soybeans are also a huge cause of deforestation, as over 66% of soy is produced to feed animals for human consumption.
+        Since only 10% of energy is transferred up each link in the food chain, it is apparent that eating the soy directly can reduce amount of 
+        produce that must be grown.
+      </p></div>
+    </div>
+    <div class="pure-g">
+      <div class="pure-u-1-2"><div id="heatmap_chart"></div></div>
+      <div class="pure-u-1-2"><div id="animal_bubble_chart"></div>
+    </div>
+    <div class="pure-g">
+      <div class="pure-u-1-1"><p>We can see the correlations between meat farmed and the percentage of land covered by forest. The most commonly
+        farmed animal for meat appears to be pigs, followed by cattle and chickens.
+      </p></div>
+    </div>
+    <div class="pure-g">
+      <div class="pure-u-1-5"><p>We can see a large correlation between soy
+        and forest cover in countries like Paraguay. </p>
+        <p>We can also see how much the soy and palm oil industries have grown since 1990.
+      </p></div>
+      <div class="pure-u-4-5"><div id="crop_bubble_chart"></div></div>
+    </div>
+    <div class="pure-g">
+      <div class="pure-u-1-1">
+        <h2>The Effects of Forestry</h2>
+        <p>Logging is also a cause of deforestation. Forestry production has been growing over time in many countries. </p></div>
+    </div>
+    <div class="pure-u-1-1"><div id="strip_chart"></div></div>
+      <div class="pure-u-1-1"><p>So we know deforestation is the problem, but what's the solution?
+        <br><br> Reforestation and afforestation involve
+        planting trees to either rebuild forests or build forests where there were none before. However, care must be taken as forests consist of hundreds or thousands of different species
+        of trees. The Great Green Wall afforestation project in China is a case study on the proliferation of disease and pests among monocultures, as well as the
+        destruction of pre-existing forests when landowners are paid to plant certain species of trees for profit. It is also imperative when afforesting to preserve
+         biomes such as grasslands that are equally as important to their inhabitants as forests are to us.
+      </p>
+      <img src="https://live.staticflickr.com/1533/24689672420_69188d3e27_z.jpg" width="640" class="centre">
+    <p>
+      
+      However, if done correctly, by allowing many native species to establish themselves, reforestation and afforestation are currently the best options we have to combat the loss of our forests.
+    </p></div>
+  </div>
+  <p>Data source: <a href="https://www.fao.org/faostat/en/#data">https://www.fao.org/faostat/en/#data</a></p>
+</div>
+  <div class="footer">
+    <p>Developed by Benita Sien for FIT3179 Assignment 2</p>
+  </div>
 
 <script type="text/javascript">
 
-  var spec2 = "js/choropleth.vg.json";
+  var spec2 = "js/forest_change_choropleth.vg.json";
   vegaEmbed('#choropleth_map', spec2).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
   
-  var spec3 = "js/bubble.vg.json";
+  var spec3 = "js/industry_bubble_scatter.vg.json";
   vegaEmbed('#bubble_chart', spec3).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
+
+  var spec4 = "js/animal_bubble.vg.json";
+  vegaEmbed('#animal_bubble_chart', spec4).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+
+  var spec5 = "js/crop_bubble.vg.json";
+  vegaEmbed('#crop_bubble_chart', spec5).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+
+  var spec6 = "js/strip.vg.json";
+  vegaEmbed('#strip_chart', spec6).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+
+  var spec7 = "js/animal_hist_heatmap.vg.json";
+  vegaEmbed('#heatmap_chart', spec7).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+
+  
 </script>
 
 </body>
