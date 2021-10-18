@@ -1,8 +1,110 @@
-#choropleth_map {
-	top:100px;
-	bottom: 100px; 
-	left: 100px;
-	right: 100px;
-	/*height: 1000px;
-	width: 800px;*/
+html {
+    scroll-behavior: smooth;
+  }
+  
+body {
+    font-family: 'Karla', sans-serif;
+    background-color: "#A6B899";
+ }
+
+.main h1 {
+    text-align: center;
+    color: white;
+    padding-top: 40vh;
+    margin-top : 0;
+    font-size: 3.5em;
+    font-weight: 800;
+}
+
+.main h2 {
+    text-align: center;
+    color: white;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-top : 0;
+
+}
+
+.main {
+    background-image: url("https://live.staticflickr.com/7055/6987538203_83972875f9_k.jpg");
+    height: 100vh;
+    width: 100%;
+    background-color: white;
+}
+.footer {
+    height: 8vh;
+    background-color: #1d2921;
+    width: 100%;
+    margin-left: 0;
+}
+
+.footer p {
+    color: white;
+    text-align: center;
+    padding-top: 3vh;
+}
+
+.content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    max-width: 1140px;
+}
+
+.content h2 {
+    font-weight: 600;
+}
+
+
+
+#down-anchor {
+    text-align: center;
+    color: white;
+    font-size: 3.5em;
+    margin-top: 25vh;
+}
+
+#down-anchor p {
+    margin-bottom: 0;
+}
+
+#down-anchor a {
+    color: white;
+    text-decoration: none;
+}
+
+a { 
+    text-decoration: none;
+    color: #809352;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 800;
+    margin-top: 3em;
+}
+
+
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    font-family: 'Karla', sans-serif;
+    line-height: 1.5;
+}
+
+p {
+    font-size: 1.3em;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.centre {
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pure-u-1-1 {
+    margin-bottom: 40px;
 }
