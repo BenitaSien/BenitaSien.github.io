@@ -1,0 +1,285 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 450,
+  "height": 400,
+  "title": {
+    "text": [
+      "Animal Agriculture Production vs Forest Land Cover",
+      "by Continent"
+    ],
+    "color": "#472C1B",
+    "fontSize": 20,
+    "frame": "group"
+  },
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/agriculture_by_area.csv",
+      "format": {"type": "csv", "parse": {"Area": "string"}, "delimiter": ","},
+      "transform": [
+        {"type": "filter", "expr": "datum.Year == year"},
+        {"type": "filter", "expr": "datum.Item == Sector"}
+      ]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"]) && isValid(datum[\"per_sqkm\"]) && isFinite(+datum[\"per_sqkm\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_1",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "indexof([\"Netherlands\",\"New Zealand\",\"Gambia\",\"Nicaragua\",\"Indonesia\",\"Paraguay\"], datum[\"Area\"]) !== -1"
+        },
+        {"type": "filter", "expr": "datum.Item=='Meat, cattle'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_2",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "indexof([\"Singapore\",\"Mauritius\",\"Barbados\"], datum[\"Area\"]) !== -1"
+        },
+        {"type": "filter", "expr": "datum.Item=='Meat, chicken'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_3",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "indexof([\"Singapore\",\"Malawi\",\"Tuvalu\",\"Barbados\",\"Netherlands\"], datum[\"Area\"]) !== -1"
+        },
+        {"type": "filter", "expr": "datum.Item=='Meat, pig'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "Sector",
+      "value": "Meat, cattle",
+      "bind": {
+        "input": "select",
+        "options": ["Meat, cattle", "Meat, chicken", "Meat, pig"]
+      }
+    },
+    {
+      "name": "year",
+      "value": 1990,
+      "bind": {
+        "input": "range",
+        "min": 1990,
+        "max": 2018,
+        "step": 2,
+        "name": "Year: "
+      }
+    }
+  ],
+  "marks": [
+    {
+      "name": "layer_0_marks",
+      "type": "symbol",
+      "style": ["circle"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "fill": {"scale": "color", "field": "Continent"},
+          "tooltip": {
+            "signal": "{\"Area\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"], \"Item\": isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"], \"per_sqkm\": format(datum[\"per_sqkm\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "circle"},
+          "description": {
+            "signal": "\"Forest Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Continent: \" + (isValid(datum[\"Continent\"]) ? datum[\"Continent\"] : \"\"+datum[\"Continent\"]) + \"; Animals Slaughtered Per km²: \" + (format(datum[\"per_sqkm\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]) + \"; Item: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; per_sqkm: \" + (format(datum[\"per_sqkm\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Continent"},
+          "size": {"scale": "size", "field": "per_sqkm"},
+          "shape": {"value": "circle"}
+        }
+      }
+    },
+    {
+      "name": "layer_1_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_1"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "30"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Continent: \" + (isValid(datum[\"Continent\"]) ? datum[\"Continent\"] : \"\"+datum[\"Continent\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Continent"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_2_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_2"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "30"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Continent: \" + (isValid(datum[\"Continent\"]) ? datum[\"Continent\"] : \"\"+datum[\"Continent\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Continent"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_3_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_3"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "30"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Continent: \" + (isValid(datum[\"Continent\"]) ? datum[\"Continent\"] : \"\"+datum[\"Continent\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Continent"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "fields": [
+          {"data": "data_0", "field": "land_cover_percent"},
+          {"data": "data_1", "field": "land_cover_percent"},
+          {"data": "data_2", "field": "land_cover_percent"},
+          {"data": "data_3", "field": "land_cover_percent"}
+        ]
+      },
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "point",
+      "domain": [
+        "Africa",
+        "Asia",
+        "North America",
+        "South America",
+        "Oceania",
+        "Europe"
+      ],
+      "range": [0, {"signal": "height"}],
+      "padding": 0.5
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": [
+        "Africa",
+        "Asia",
+        "North America",
+        "South America",
+        "Oceania",
+        "Europe"
+      ],
+      "range": [
+        "#E2AA28",
+        "#BC4710",
+        "#621B00",
+        "#2F1000",
+        "#172625",
+        "#426B69"
+      ]
+    },
+    {
+      "name": "size",
+      "type": "linear",
+      "domain": [0, 30, 100, 500],
+      "range": [10, 1000, 2000, 3000],
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Forest Cover %",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {"scale": "y", "orient": "left", "grid": false, "zindex": 0}
+  ],
+  "legends": [
+    {
+      "clipHeight": 30,
+      "title": "Animals Slaughtered Per km²",
+      "size": "size",
+      "symbolType": "circle",
+      "encode": {
+        "symbols": {
+          "update": {
+            "fill": {"value": "black"},
+            "fillOpacity": {"value": 0.7},
+            "opacity": {"value": 0.7},
+            "stroke": {"value": "transparent"}
+          }
+        }
+      }
+    }
+  ],
+  "config": {}
+}

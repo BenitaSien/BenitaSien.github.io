@@ -1,0 +1,575 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 800,
+  "data": [
+    {
+      "name": "source_1",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/forest_cover_percent_change.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/KaneSec/vega_lite/main/2_symbol_map/js/ne_110m_admin_0_countries.topojson",
+      "format": {
+        "type": "topojson",
+        "feature": "ne_110m_admin_0_countries",
+        "parse": {}
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "datum[\"properties\"] && datum[\"properties\"][\"NAME\"]",
+          "as": "properties.NAME"
+        }
+      ]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "lookup",
+          "from": "source_1",
+          "key": "Area",
+          "fields": ["properties.NAME"],
+          "values": [
+            "Percent_Change",
+            "Area",
+            "Year_x",
+            "Year_y",
+            "land_cover_percent_x",
+            "land_cover_percent_y"
+          ]
+        },
+        {
+          "type": "formula",
+          "expr": "datum['Year_x'] + ' - ' + datum['Year_y']",
+          "as": "timespan"
+        }
+      ]
+    },
+    {
+      "name": "data_1",
+      "source": "data_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Percent_Change\"]) && isFinite(+datum[\"Percent_Change\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_2",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'Iceland'"}]
+    },
+    {
+      "name": "data_3",
+      "source": "data_2",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'Forests are steadily growing in Europe'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_4",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'Uruguay'"}]
+    },
+    {
+      "name": "data_6",
+      "source": "data_4",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'Paraguay and Nicaragua have some of the highest'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_7",
+      "source": "data_4",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'Cuba and Puerto Rico are carrying out'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_8",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'Benin'"}]
+    },
+    {
+      "name": "data_9",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'China'"}]
+    },
+    {
+      "name": "data_10",
+      "source": "data_9",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "datum['Area']+' is a world leader in afforestation with'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_11",
+      "source": "data_9",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'over 500,000 km² of trees replanted since 1990'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_12",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'Indonesia'"}]
+    },
+    {
+      "name": "data_13",
+      "source": "data_12",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'Forests in Indonesia have declined'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_14",
+      "source": "data_12",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'due to wood pulp and palm oil industries'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_15",
+      "source": "data_0",
+      "transform": [{"type": "filter", "expr": "datum.Area == 'Cambodia'"}]
+    },
+    {
+      "name": "data_16",
+      "source": "data_15",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'Illegal logging is a large cause'",
+          "as": "text_annotation"
+        }
+      ]
+    },
+    {
+      "name": "data_17",
+      "source": "data_15",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "'of forest loss in Myanmar and Cambodia'",
+          "as": "text_annotation"
+        }
+      ]
+    }
+  ],
+  "projections": [
+    {
+      "name": "projection",
+      "size": {"signal": "[width, childHeight]"},
+      "fit": {"signal": "[data('source_0'), data('data_1')]"},
+      "type": "equalEarth"
+    }
+  ],
+  "signals": [{"name": "childHeight", "value": 500}],
+  "layout": {"padding": 20, "columns": 1, "bounds": "full", "align": "each"},
+  "marks": [
+    {
+      "type": "group",
+      "name": "concat_0_group",
+      "title": {
+        "text": "Forest Cover Change (1990-2020)",
+        "color": "#472C1B",
+        "fontSize": 20,
+        "frame": "group"
+      },
+      "encode": {
+        "update": {
+          "width": {"signal": "width"},
+          "height": {"signal": "childHeight"}
+        }
+      },
+      "marks": [
+        {
+          "name": "concat_0_layer_0_marks",
+          "type": "shape",
+          "style": ["geoshape"],
+          "from": {"data": "source_0"},
+          "encode": {
+            "update": {
+              "fill": {"value": "#F2F0EE"},
+              "stroke": {"value": "white"},
+              "ariaRoleDescription": {"value": "geoshape"}
+            }
+          },
+          "transform": [{"type": "geoshape", "projection": "projection"}]
+        },
+        {
+          "name": "concat_0_layer_1_layer_0_marks",
+          "type": "shape",
+          "style": ["geoshape"],
+          "from": {"data": "data_1"},
+          "encode": {
+            "update": {
+              "fill": {"scale": "color", "field": "Percent_Change"},
+              "tooltip": {
+                "signal": "{\"Country\": isValid(datum[\"properties.NAME\"]) ? datum[\"properties.NAME\"] : \"\"+datum[\"properties.NAME\"], \"% Forest Cover Change\": format(datum[\"Percent_Change\"], \"\"), \"Timespan\": isValid(datum[\"timespan\"]) ? datum[\"timespan\"] : \"\"+datum[\"timespan\"], \"Starting forest cover %\": format(datum[\"land_cover_percent_x\"], \"\"), \"Current forest cover %\": format(datum[\"land_cover_percent_y\"], \"\")}"
+              },
+              "ariaRoleDescription": {"value": "geoshape"},
+              "description": {
+                "signal": "\"Percent_Change: \" + (format(datum[\"Percent_Change\"], \"\")) + \"; Country: \" + (isValid(datum[\"properties.NAME\"]) ? datum[\"properties.NAME\"] : \"\"+datum[\"properties.NAME\"]) + \"; % Forest Cover Change: \" + (format(datum[\"Percent_Change\"], \"\")) + \"; Timespan: \" + (isValid(datum[\"timespan\"]) ? datum[\"timespan\"] : \"\"+datum[\"timespan\"]) + \"; Starting forest cover %: \" + (format(datum[\"land_cover_percent_x\"], \"\")) + \"; Current forest cover %: \" + (format(datum[\"land_cover_percent_y\"], \"\"))"
+              }
+            }
+          },
+          "transform": [{"type": "geoshape", "projection": "projection"}]
+        },
+        {
+          "name": "concat_0_layer_1_layer_1_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_3"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": -20},
+              "dy": {"value": -185},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_2_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_2"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "text": {
+                "value": "due to increased protection laws and reforestation efforts"
+              },
+              "dx": {"value": -20},
+              "dy": {"value": -173},
+              "fill": {"value": "#1D110C"},
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_3_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_6"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": -110},
+              "dy": {"value": 90},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_4_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_4"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "text": {
+                "value": "deforestation rates due to agricultural expansion"
+              },
+              "dx": {"value": -110},
+              "dy": {"value": 102},
+              "fill": {"value": "#1D110C"},
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_5_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_7"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": -190},
+              "dy": {"value": -90},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_6_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_4"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "text": {"value": "successful reforestation initiatives"},
+              "dx": {"value": -190},
+              "dy": {"value": -78},
+              "fill": {"value": "#1D110C"},
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_7_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_8"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "text": {"value": "West Africa's deforestation is"},
+              "dx": {"value": 40},
+              "dy": {"value": 5},
+              "fill": {"value": "#1D110C"},
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_8_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_8"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "text": {"value": "driven by the cocoa industry"},
+              "dx": {"value": 40},
+              "dy": {"value": 17},
+              "fill": {"value": "#1D110C"},
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_9_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_10"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 260},
+              "dy": {"value": -102},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_10_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_11"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 260},
+              "dy": {"value": -90},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_11_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_13"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 320},
+              "dy": {"value": 0},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_12_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_14"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 320},
+              "dy": {"value": 12},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_13_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_16"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 250},
+              "dy": {"value": -52},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        },
+        {
+          "name": "concat_0_layer_1_layer_14_layer_0_marks",
+          "type": "text",
+          "style": ["text"],
+          "from": {"data": "data_17"},
+          "encode": {
+            "update": {
+              "align": {"value": "left"},
+              "dx": {"value": 250},
+              "dy": {"value": -40},
+              "fill": {"value": "#1D110C"},
+              "description": {
+                "signal": "\"text_annotation: \" + (isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"])"
+              },
+              "x": {"signal": "width", "mult": 0.5},
+              "y": {"signal": "childHeight", "mult": 0.5},
+              "text": {
+                "signal": "isValid(datum[\"text_annotation\"]) ? datum[\"text_annotation\"] : \"\"+datum[\"text_annotation\"]"
+              },
+              "baseline": {"value": "middle"}
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": [-25, -12.5, 0, 10, 20],
+      "range": ["#7D451B", "#B4794B", "#EEEAD3", "#60903C", "#44652A"],
+      "interpolate": "hcl",
+      "zero": true
+    }
+  ],
+  "legends": [
+    {
+      "title": "Percent Change",
+      "fill": "color",
+      "gradientLength": {"signal": "clamp(childHeight, 64, 200)"}
+    }
+  ],
+  "config": {}
+}

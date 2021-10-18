@@ -1,0 +1,285 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 900,
+  "height": 400,
+  "title": {
+    "text": ["Forestry Production vs Forest Land Cover", "by Continent"],
+    "color": "#472C1B",
+    "fontSize": 20,
+    "frame": "group"
+  },
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/forestry_by_area.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [{"type": "filter", "expr": "datum.Year == year"}]
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"]) && isValid(datum[\"per_sqkm\"]) && isFinite(+datum[\"per_sqkm\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_1",
+      "source": "source_0",
+      "transform": [
+        {"type": "filter", "expr": "datum.Area=='Germany'"},
+        {"type": "filter", "expr": "datum.Item=='Roundwood'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_2",
+      "source": "source_0",
+      "transform": [
+        {"type": "filter", "expr": "datum.Area=='Rwanda'"},
+        {"type": "filter", "expr": "datum.Item=='Roundwood'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_3",
+      "source": "source_0",
+      "transform": [
+        {"type": "filter", "expr": "datum.Area=='Indonesia'"},
+        {"type": "filter", "expr": "datum.Item=='Roundwood'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_4",
+      "source": "source_0",
+      "transform": [
+        {"type": "filter", "expr": "datum.Area=='Cambodia'"},
+        {"type": "filter", "expr": "datum.Item=='Wood fuel'"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "year",
+      "value": 1990,
+      "bind": {
+        "input": "range",
+        "min": 1990,
+        "max": 2020,
+        "step": 1,
+        "name": "Year: "
+      }
+    }
+  ],
+  "marks": [
+    {
+      "name": "layer_0_marks",
+      "type": "rect",
+      "style": ["tick"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 1},
+          "fill": {"scale": "color", "field": "per_sqkm"},
+          "tooltip": {
+            "signal": "{\"Area\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"], \"Item\": isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"], \"per_sqkm\": format(datum[\"per_sqkm\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "tick"},
+          "description": {
+            "signal": "\"Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Product: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; per_sqkm: \" + (format(datum[\"per_sqkm\"], \"\")) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]) + \"; Item: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"])"
+          },
+          "xc": {"scale": "x", "field": "land_cover_percent"},
+          "yc": {"scale": "y", "field": "Item"},
+          "height": {"scale": "size", "field": "per_sqkm"},
+          "width": {"value": 2}
+        }
+      }
+    },
+    {
+      "name": "layer_1_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_1"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "50"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Product: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Item"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_2_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_2"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "-60"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Product: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Item"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_3_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_3"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "50"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Product: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Item"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    },
+    {
+      "name": "layer_4_marks",
+      "type": "text",
+      "style": ["text"],
+      "from": {"data": "data_4"},
+      "encode": {
+        "update": {
+          "align": {"value": "center"},
+          "baseline": {"value": "middle"},
+          "dy": {"signal": "60"},
+          "fill": {"value": "#472C1B"},
+          "description": {
+            "signal": "\"Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Product: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "land_cover_percent"},
+          "y": {"scale": "y", "field": "Item"},
+          "text": {
+            "signal": "isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]"
+          }
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "fields": [
+          {"data": "data_0", "field": "land_cover_percent"},
+          {"data": "data_1", "field": "land_cover_percent"},
+          {"data": "data_2", "field": "land_cover_percent"},
+          {"data": "data_3", "field": "land_cover_percent"},
+          {"data": "data_4", "field": "land_cover_percent"}
+        ]
+      },
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "point",
+      "domain": {
+        "fields": [
+          {"data": "data_0", "field": "Item"},
+          {"data": "data_1", "field": "Item"},
+          {"data": "data_2", "field": "Item"},
+          {"data": "data_3", "field": "Item"},
+          {"data": "data_4", "field": "Item"}
+        ],
+        "sort": true
+      },
+      "range": [0, {"signal": "height"}],
+      "padding": 0.5
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "data_0", "field": "per_sqkm"},
+      "range": ["#D1B28F", "#7D451B"],
+      "interpolate": "hcl",
+      "zero": false
+    },
+    {
+      "name": "size",
+      "type": "linear",
+      "domain": {"data": "data_0", "field": "per_sqkm"},
+      "range": [20, 100],
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Forest Land Cover %",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Product",
+      "zindex": 0
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "clamp(height, 64, 200)"},
+      "title": "per_sqkm",
+      "encode": {"gradient": {"update": {"opacity": {"value": 1}}}},
+      "symbolType": "circle",
+      "size": "size"
+    }
+  ],
+  "config": {"style": {"cell": {"stroke": "transparent"}}}
+}

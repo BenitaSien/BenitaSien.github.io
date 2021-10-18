@@ -1,0 +1,206 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 450,
+  "height": 400,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/agriculture_by_area.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "log(datum.per_sqkm)/log(2)",
+          "as": "log_x"
+        },
+        {
+          "type": "filter",
+          "expr": "(isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"])) && (isValid(datum[\"log_x\"]) && isFinite(+datum[\"log_x\"]))"
+        },
+        {"type": "filter", "expr": "datum.Year == year"},
+        {"type": "filter", "expr": "datum.Item == Sector"},
+        {
+          "type": "extent",
+          "field": "land_cover_percent",
+          "signal": "bin_maxbins_20_land_cover_percent_extent"
+        },
+        {
+          "type": "bin",
+          "field": "land_cover_percent",
+          "as": [
+            "bin_maxbins_20_land_cover_percent",
+            "bin_maxbins_20_land_cover_percent_end"
+          ],
+          "signal": "bin_maxbins_20_land_cover_percent_bins",
+          "extent": {"signal": "bin_maxbins_20_land_cover_percent_extent"},
+          "maxbins": 20
+        },
+        {
+          "type": "extent",
+          "field": "log_x",
+          "signal": "bin_maxbins_20_log_x_extent"
+        },
+        {
+          "type": "bin",
+          "field": "log_x",
+          "as": ["bin_maxbins_20_log_x", "bin_maxbins_20_log_x_end"],
+          "signal": "bin_maxbins_20_log_x_bins",
+          "extent": {"signal": "bin_maxbins_20_log_x_extent"},
+          "maxbins": 20
+        },
+        {
+          "type": "aggregate",
+          "groupby": [
+            "bin_maxbins_20_land_cover_percent",
+            "bin_maxbins_20_land_cover_percent_end",
+            "bin_maxbins_20_log_x",
+            "bin_maxbins_20_log_x_end"
+          ],
+          "ops": ["count"],
+          "fields": [null],
+          "as": ["__count"]
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"bin_maxbins_20_land_cover_percent\"]) && isFinite(+datum[\"bin_maxbins_20_land_cover_percent\"]) && isValid(datum[\"bin_maxbins_20_log_x\"]) && isFinite(+datum[\"bin_maxbins_20_log_x\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "Sector",
+      "value": "Meat, cattle",
+      "bind": {
+        "input": "select",
+        "options": ["Meat, cattle", "Meat, chicken", "Meat, pig"]
+      }
+    },
+    {
+      "name": "year",
+      "value": 1990,
+      "bind": {
+        "input": "range",
+        "min": 1990,
+        "max": 2018,
+        "step": 2,
+        "name": "Year: "
+      }
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["rect"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "__count"},
+          "description": {
+            "signal": "\"Forest Cover %: \" + (!isValid(datum[\"bin_maxbins_20_land_cover_percent\"]) || !isFinite(+datum[\"bin_maxbins_20_land_cover_percent\"]) ? \"null\" : format(datum[\"bin_maxbins_20_land_cover_percent\"], \"\") + \" – \" + format(datum[\"bin_maxbins_20_land_cover_percent_end\"], \"\")) + \"; log(Animals Slaughtered Per km²): \" + (!isValid(datum[\"bin_maxbins_20_log_x\"]) || !isFinite(+datum[\"bin_maxbins_20_log_x\"]) ? \"null\" : format(datum[\"bin_maxbins_20_log_x\"], \"\") + \" – \" + format(datum[\"bin_maxbins_20_log_x_end\"], \"\")) + \"; Count of Records: \" + (format(datum[\"__count\"], \"\"))"
+          },
+          "x2": [
+            {
+              "test": "!isValid(datum[\"bin_maxbins_20_land_cover_percent\"]) || !isFinite(+datum[\"bin_maxbins_20_land_cover_percent\"])",
+              "value": 0
+            },
+            {
+              "scale": "x",
+              "field": "bin_maxbins_20_land_cover_percent",
+              "offset": 0.5
+            }
+          ],
+          "x": [
+            {
+              "test": "!isValid(datum[\"bin_maxbins_20_land_cover_percent\"]) || !isFinite(+datum[\"bin_maxbins_20_land_cover_percent\"])",
+              "value": 0
+            },
+            {
+              "scale": "x",
+              "field": "bin_maxbins_20_land_cover_percent_end",
+              "offset": 0.5
+            }
+          ],
+          "y2": [
+            {
+              "test": "!isValid(datum[\"bin_maxbins_20_log_x\"]) || !isFinite(+datum[\"bin_maxbins_20_log_x\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "bin_maxbins_20_log_x", "offset": 0.5}
+          ],
+          "y": [
+            {
+              "test": "!isValid(datum[\"bin_maxbins_20_log_x\"]) || !isFinite(+datum[\"bin_maxbins_20_log_x\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "bin_maxbins_20_log_x_end", "offset": 0.5}
+          ]
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "signal": "[bin_maxbins_20_land_cover_percent_bins.start, bin_maxbins_20_land_cover_percent_bins.stop]"
+      },
+      "range": [0, {"signal": "width"}],
+      "bins": {"signal": "bin_maxbins_20_land_cover_percent_bins"},
+      "zero": false
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "signal": "[bin_maxbins_20_log_x_bins.start, bin_maxbins_20_log_x_bins.stop]"
+      },
+      "range": [{"signal": "height"}, 0],
+      "bins": {"signal": "bin_maxbins_20_log_x_bins"},
+      "zero": false
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": [0, 3, 8],
+      "range": ["#FFEDC2", "#E2AA28", "#8F2800"],
+      "interpolate": "hcl",
+      "zero": true
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Forest Cover %",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/10)"},
+      "zindex": 1
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "log(Animals Slaughtered Per km²)",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/10)"},
+      "encode": {"labels": {"update": {"text": {"signal": "datum.label"}}}},
+      "zindex": 1
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "clamp(height, 64, 200)"},
+      "title": "Count of Records"
+    }
+  ],
+  "config": {"style": {"cell": {"stroke": "transparent"}}}
+}

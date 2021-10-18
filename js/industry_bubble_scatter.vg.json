@@ -1,0 +1,312 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 900,
+  "height": 400,
+  "title": {
+    "text": "Forest Land Cover vs Industry Production",
+    "color": "#472C1B",
+    "fontSize": 20,
+    "frame": "group"
+  },
+  "style": "cell",
+  "data": [
+    {"name": "area_highlight_store"},
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/BenitaSien/BenitaSien.github.io/main/data/agriculture_by_area.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [
+        {"type": "filter", "expr": "datum.Year == year"},
+        {"type": "filter", "expr": "datum.Item == Sector"},
+        {
+          "type": "formula",
+          "expr": "datum['Land.area..sq..km.'] * datum['land_cover_percent'] / 1000",
+          "as": "forest_area"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"per_sqkm\"]) && isFinite(+datum[\"per_sqkm\"]) && isValid(datum[\"land_cover_percent\"]) && isFinite(+datum[\"land_cover_percent\"]) && isValid(datum[\"forest_area\"]) && isFinite(+datum[\"forest_area\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "unit",
+      "value": {},
+      "on": [
+        {"events": "mousemove", "update": "isTuple(group()) ? group() : unit"}
+      ]
+    },
+    {
+      "name": "area_highlight_Continent_legend",
+      "value": null,
+      "on": [
+        {
+          "events": [
+            {
+              "source": "view",
+              "type": "click",
+              "markname": "Continent_legend_symbols"
+            },
+            {
+              "source": "view",
+              "type": "click",
+              "markname": "Continent_legend_labels"
+            },
+            {
+              "source": "view",
+              "type": "click",
+              "markname": "Continent_legend_entries"
+            }
+          ],
+          "update": "datum.value || item().items[0].items[0].datum.value",
+          "force": true
+        },
+        {
+          "events": [{"source": "view", "type": "click"}],
+          "update": "!event.item || !datum ? null : area_highlight_Continent_legend",
+          "force": true
+        }
+      ]
+    },
+    {
+      "name": "area_highlight",
+      "update": "vlSelectionResolve(\"area_highlight_store\", \"union\", true, true)"
+    },
+    {
+      "name": "year",
+      "value": 1990,
+      "bind": {
+        "input": "range",
+        "min": 1990,
+        "max": 2018,
+        "step": 2,
+        "name": "Year"
+      }
+    },
+    {
+      "name": "Sector",
+      "value": "Meat, cattle",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Meat, cattle",
+          "Meat, chicken",
+          "Meat, pig",
+          "Soybeans",
+          "Oil palm fruit",
+          "Cocoa, beans"
+        ]
+      }
+    },
+    {
+      "name": "area_highlight_tuple",
+      "update": "area_highlight_Continent_legend !== null ? {fields: area_highlight_tuple_fields, values: [area_highlight_Continent_legend]} : null"
+    },
+    {
+      "name": "area_highlight_tuple_fields",
+      "value": [{"type": "E", "field": "Continent"}]
+    },
+    {
+      "name": "area_highlight_toggle",
+      "value": false,
+      "on": [
+        {
+          "events": {"merge": [{"source": "view", "type": "click"}]},
+          "update": "event.shiftKey"
+        }
+      ]
+    },
+    {
+      "name": "area_highlight_modify",
+      "on": [
+        {
+          "events": {"signal": "area_highlight_tuple"},
+          "update": "modify(\"area_highlight_store\", area_highlight_toggle ? null : area_highlight_tuple, area_highlight_toggle ? null : true, area_highlight_toggle ? area_highlight_tuple : null)"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "style": ["circle"],
+      "interactive": true,
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "opacity": [
+            {
+              "test": "!length(data(\"area_highlight_store\")) || vlSelectionTest(\"area_highlight_store\", datum)",
+              "value": 0.8
+            },
+            {"value": 0.1}
+          ],
+          "fill": {"scale": "color", "field": "Continent"},
+          "tooltip": {
+            "signal": "{\"Area\": isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]}"
+          },
+          "ariaRoleDescription": {"value": "circle"},
+          "description": {
+            "signal": "\"per_sqkm: \" + (format(datum[\"per_sqkm\"], \"\")) + \"; Forest Land Cover %: \" + (format(datum[\"land_cover_percent\"], \"\")) + \"; Forest Cover (1,000 km²): \" + (format(datum[\"forest_area\"], \"\")) + \"; Continent: \" + (isValid(datum[\"Continent\"]) ? datum[\"Continent\"] : \"\"+datum[\"Continent\"]) + \"; Area: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"])"
+          },
+          "x": {"scale": "x", "field": "per_sqkm"},
+          "y": {"scale": "y", "field": "land_cover_percent"},
+          "size": {"scale": "size", "field": "forest_area"},
+          "shape": {"value": "circle"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "log",
+      "domain": [1, 70],
+      "range": [0, {"signal": "width"}],
+      "clamp": true
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "land_cover_percent"},
+      "range": [{"signal": "height"}, 0],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": [
+        "Africa",
+        "Asia",
+        "North America",
+        "South America",
+        "Oceania",
+        "Europe"
+      ],
+      "range": [
+        "#E2AA28",
+        "#BC4710",
+        "#621B00",
+        "#2F1000",
+        "#172625",
+        "#426B69"
+      ]
+    },
+    {
+      "name": "size",
+      "type": "threshold",
+      "domain": [500, 15000, 30000],
+      "range": [100, 300, 800, 1600]
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "gridScale": "y",
+      "grid": true,
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "per_sqkm",
+      "labelFlush": true,
+      "labelOverlap": "greedy",
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Forest Land Cover %",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "symbolType": "circle",
+      "title": "Continent",
+      "encode": {
+        "labels": {
+          "name": "Continent_legend_labels",
+          "interactive": true,
+          "update": {
+            "opacity": [
+              {
+                "test": "(!length(data(\"area_highlight_store\")) || (area_highlight[\"Continent\"] && indexof(area_highlight[\"Continent\"], datum.value) >= 0))",
+                "value": 1
+              },
+              {"value": 0.35}
+            ]
+          }
+        },
+        "symbols": {
+          "name": "Continent_legend_symbols",
+          "interactive": true,
+          "update": {
+            "opacity": [
+              {
+                "test": "(!length(data(\"area_highlight_store\")) || (area_highlight[\"Continent\"] && indexof(area_highlight[\"Continent\"], datum.value) >= 0))",
+                "value": 0.8
+              },
+              {"value": 0.35}
+            ]
+          }
+        },
+        "entries": {
+          "name": "Continent_legend_entries",
+          "interactive": true,
+          "update": {"fill": {"value": "transparent"}}
+        }
+      }
+    },
+    {
+      "title": "Forest Cover (1,000 km²)",
+      "size": "size",
+      "labelOverlap": "greedy",
+      "symbolType": "circle",
+      "encode": {
+        "symbols": {
+          "update": {
+            "fill": {"value": "black"},
+            "fillOpacity": {"value": 0.8},
+            "opacity": {"value": 0.8},
+            "stroke": {"value": "transparent"}
+          }
+        }
+      }
+    }
+  ],
+  "config": {}
+}
